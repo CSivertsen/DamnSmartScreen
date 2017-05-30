@@ -56,4 +56,27 @@ class Person {
   boolean isAttentive(){
     return isAttentive;
   }
+  
+  void printInfo(){
+    println("id:\n" + id);
+    float[] pos = position.array();
+    println("pos:");
+    printArray(pos);
+    float[] lastPos = lastPosition.array();
+    println("lastPos:");
+    printArray(lastPos);
+    float[] posDelta = positionDelta.array();
+    println("posDelta:");
+    printArray(posDelta);
+    println("lastPositions:");
+    for(int i = 0; i < posListSize; i++){
+        float[] lPositions = lastPositions[i].array();
+        printArray(lPositions);
+    }
+    
+    //String infoString = "id = " + id + "\nposition = " + pos + "\nlastPosition = " + lastPos + "\npositionDelta = " + posDelta + "\nisAttentive = " + isAttentive;; 
+    
+  //positions = lastpositions[i].array();
+  //print posi
+  }
 }
