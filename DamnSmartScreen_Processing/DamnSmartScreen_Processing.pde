@@ -1,16 +1,15 @@
-Person p;
-int c = 1;
+Person[] persons;
+int val = 10;
+PVector p;
 
-void setup(){
-for(int i = 0; i < 10; i++){
-  p = new Person(i, 2, 3);
+void setup() {
+  persons = new Person[val];
+  for (int i = 0; i < val; i++) {
+    persons[i] = new Person(val,p);
+  }
+  int val = persons[0].getId();
+  println("val = " + val);
 }
-int val = p.getId();
-println("val = " + val);
-}
 
-void draw(){
-
-
-
+void draw() {
 }
