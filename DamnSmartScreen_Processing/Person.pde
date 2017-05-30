@@ -21,6 +21,7 @@ class Person {
   void setPosition(PVector p){
     position = p;
     positionDelta = PVector.sub(position,lastPosition);
+    setLastPositions(p);
     lastPosition = position;
   }
   
