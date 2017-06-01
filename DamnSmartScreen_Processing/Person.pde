@@ -11,13 +11,19 @@ class Person {
     id = i;
     position = p;
     lastPosition = position;
+    positionDelta = PVector.sub(position,lastPosition);
     lastPositions = new PVector[posListSize];
+    // initializing all the last positions to (0,0)
+    for(int j = 0; j < posListSize; j++){
+        lastPositions[j] = new PVector(0,0);
+    }
   }
   
   int getId(){
     return id;
   }
   
+  // updates position values of person object
   void setPosition(PVector p){
     position = p;
     positionDelta = PVector.sub(position,lastPosition);
@@ -25,6 +31,8 @@ class Person {
     lastPosition = position;
   }
   
+  // adds new position to lastPositions array
+  // and deletes oldest saved position
   void setLastPositions(PVector p){
     PVector[] newPositions = new PVector[posListSize];
     for(int i = 0; i < posListSize - 1; i++){
@@ -58,25 +66,16 @@ class Person {
   }
   
   void printInfo(){
-    println("id:\n" + id);
-    float[] pos = position.array();
-    println("pos:");
-    printArray(pos);
-    float[] lastPos = lastPosition.array();
+    println("id: " + id);
+    println("position:");
+    printArray(position.array());
     println("lastPos:");
-    printArray(lastPos);
-    float[] posDelta = positionDelta.array();
+    printArray(lastPosition.array());
     println("posDelta:");
-    printArray(posDelta);
-    println("lastPositions:");
+    printArray(positionDelta.array());
     for(int i = 0; i < posListSize; i++){
-        float[] lPositions = lastPositions[i].array();
-        printArray(lPositions);
+      println("lastPositions[" + i + "]");  
+      println(lastPositions[i].array());
     }
-    
-    //String infoString = "id = " + id + "\nposition = " + pos + "\nlastPosition = " + lastPos + "\npositionDelta = " + posDelta + "\nisAttentive = " + isAttentive;; 
-    
-  //positions = lastpositions[i].array();
-  //print posi
   }
 }
