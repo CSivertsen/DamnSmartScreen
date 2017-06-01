@@ -4,7 +4,6 @@ class Person {
   PVector position;
   PVector lastPosition;
   PVector positionDelta;
-  //PVector[] lastPositions;
   boolean isAttentive;
   ArrayList<PVector> lastPositions = new ArrayList<PVector>();
 
@@ -14,11 +13,6 @@ class Person {
     lastPosition = position;
     positionDelta = PVector.sub(position, lastPosition);
     setLastPositions(p);
-    //lastPositions = new PVector[posListSize];
-    //// initializing all the last positions to (0,0)
-    //for(int j = 0; j < posListSize; j++){
-    //    lastPositions[j] = new PVector(0,0);
-    //}
   }
 
   int getId() {
