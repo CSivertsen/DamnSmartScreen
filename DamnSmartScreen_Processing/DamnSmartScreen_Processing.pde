@@ -1,6 +1,10 @@
+/*
+this Main sketch was only made to test the person class
+*/
+
 Person[] persons;
 int val = 10;
-PVector p;
+PVector test2 = new PVector(40,80);
 
 void setup() {
   persons = new Person[val];
@@ -8,7 +12,7 @@ void setup() {
   for (int i = 0; i < val; i++) {
     persons[i] = new Person(val, testV);
   }
-  //int val = persons[0].getId();
+  persons[0].setPosition(test2);
   persons[0].printInfo();
 }
 

@@ -4,78 +4,78 @@ class Person {
   PVector position;
   PVector lastPosition;
   PVector positionDelta;
-  PVector[] lastPositions;
+  //PVector[] lastPositions;
   boolean isAttentive;
-  
-  Person(int i, PVector p){
+  ArrayList<PVector> lastPositions = new ArrayList<PVector>();
+
+  Person(int i, PVector p) {
     id = i;
     position = p;
     lastPosition = position;
-    positionDelta = PVector.sub(position,lastPosition);
-    lastPositions = new PVector[posListSize];
-    // initializing all the last positions to (0,0)
-    for(int j = 0; j < posListSize; j++){
-        lastPositions[j] = new PVector(0,0);
-    }
+    positionDelta = PVector.sub(position, lastPosition);
+    setLastPositions(p);
+    //lastPositions = new PVector[posListSize];
+    //// initializing all the last positions to (0,0)
+    //for(int j = 0; j < posListSize; j++){
+    //    lastPositions[j] = new PVector(0,0);
+    //}
   }
-  
-  int getId(){
+
+  int getId() {
     return id;
   }
-  
+
   // updates position values of person object
-  void setPosition(PVector p){
-    position = p;
-    positionDelta = PVector.sub(position,lastPosition);
-    setLastPositions(p);
+  void setPosition(PVector p) {
     lastPosition = position;
+    position = p;
+    positionDelta = PVector.sub(position, lastPosition);
+    setLastPositions(p);
+    //lastPosition = position;
   }
-  
+
   // adds new position to lastPositions array
   // and deletes oldest saved position
-  void setLastPositions(PVector p){
-    PVector[] newPositions = new PVector[posListSize];
-    for(int i = 0; i < posListSize - 1; i++){
-      if (i == 0) {
-        newPositions[i] = p;
-      } else {
-      newPositions[i + 1] = lastPositions[i];
+  private void setLastPositions(PVector p) {
+    if (lastPositions.size() == 0) {
+      lastPositions.add(p);
+    } else if (lastPositions.size() > 0 && lastPositions.size() <= posListSize) {
+      if (lastPositions.size() == posListSize) {
+        lastPositions.remove(posListSize);
       }
+      lastPositions.add(0, p);
     }
-    lastPositions = newPositions;
   }
-  
-  PVector getPositionDelta(){
+
+  PVector getPositionDelta() {
     return positionDelta;
   }
-  
-  PVector getLastPosition(){
+
+  PVector getLastPosition() {
     return lastPosition;
   }
-  
-  PVector[] getLastPositions(){
+
+  ArrayList getLastPositions() {
     return lastPositions;
   }
-  
-  void setAttention(boolean b){
+
+  void setAttention(boolean b) {
     isAttentive = b;
   }
-  
-  boolean isAttentive(){
+
+  boolean isAttentive() {
     return isAttentive;
   }
-  
-  void printInfo(){
+
+  void printInfo() {
     println("id: " + id);
     println("position:");
-    printArray(position.array());
+    println(position.array());
     println("lastPos:");
-    printArray(lastPosition.array());
+    println(lastPosition.array());
     println("posDelta:");
-    printArray(positionDelta.array());
-    for(int i = 0; i < posListSize; i++){
-      println("lastPositions[" + i + "]");  
-      println(lastPositions[i].array());
-    }
+    println(positionDelta.array()); 
+    println("lastPositions:");
+    println(lastPositions);
   }
 }
