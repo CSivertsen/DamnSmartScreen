@@ -33,7 +33,7 @@ class Person {
   private void setLastPositions(PVector p) {
     if (lastPositions.size() == 0) {
       lastPositions.add(p);
-    } else if (lastPositions.size() > 0 && lastPositions.size() <= posListSize) {
+    } else if (lastPositions.size() > 0 && lastPositions.size() < posListSize) {
       if (lastPositions.size() == posListSize) {
         lastPositions.remove(posListSize);
       }
