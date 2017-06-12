@@ -11,7 +11,7 @@ class QLearning {
 
   int statesCount; 
 
-  void init(int size) {
+  QLearning(int size) {
     statesCount = size;
     R = new int[statesCount][statesCount];
     Q = new double[statesCount][statesCount];
@@ -22,22 +22,23 @@ class QLearning {
     println("Policy:");
   }
 
-  int calculateQ(int crtState, boolean reinforce) {
-    Random rand = new Random();
-    int currentState = crtState;
+  int move(int[] lastPositions, boolean reinforce) {
+    
+    int currentState = lastPositions[0];
 
     if (reinforce) {
+      int backtrack = 3;
+      
+      for (int i = 0; i < backtrack; i++){
+        double q = Q[lastPositions[i+1]][lastPositions[i]];
+        double maxQ = maxQ(lastPositions[i]);
+        int r = R[lastPositions[i+1]][lastPositions[i]];
+        double value = q + alpha * (r + gamma * maxQ - q) * backtrack/(i+1); //Not a beautiful way of backpropagating, but i think it works for now.
+        Q[lastPositions[i+1]][lastPositions[i]] = value;
+      }
     }
-
-    int nextState = rand.nextInt(statesCount);
-
-    double q = Q[currentState][nextState];
-    double maxQ = maxQ(nextState);
-    int r = R[currentState][nextState];
-
-    double value = q + alpha * (r + gamma * maxQ - q);
-    Q[crtState][nextState] = value;
-
+    
+    int nextState = getPolicyFromState(currentState);
     return nextState;
   }
 
@@ -46,12 +47,13 @@ class QLearning {
     for (int nextAction = 0; nextAction < statesCount; nextAction++) {
       double value = Q[nextState][nextAction];
 
-      if (value > maxValue)
+      if (value > maxValue) {
         maxValue = value;
-    }
+      }
+    }  
     return maxValue;
   }
-  
+
   int getPolicyFromState(int state) {
 
     double maxValue = Double.MIN_VALUE;
@@ -68,7 +70,7 @@ class QLearning {
     }
     return policyGotoState;
   }
-  
+
   void printQ() {
     System.out.println("Q matrix");
     for (int i = 0; i < Q.length; i++) {
@@ -79,7 +81,7 @@ class QLearning {
       System.out.println();
     }
   }
-  
+
   // Used for debug
   void printR(int[][] matrix) {
     System.out.printf("%25s", "States: ");

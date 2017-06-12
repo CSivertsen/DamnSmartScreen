@@ -2,16 +2,23 @@
 Person p;
 int c = 1;
 
-void setup(){
-for(int i = 0; i < 10; i++){
-  p = new Person(i, 2, 3);
+QLearning ql;
+
+void setup() {
+  for (int i = 0; i < 10; i++) {
+    p = new Person(i, 2, 3);
+  }
+  int val = p.getId();
+  println("val = " + val);
+  
+  qlTest();
 }
-int val = p.getId();
-println("val = " + val);
+
+void draw() {
 }
 
-void draw(){
-
-
+void qlTest(){
+  
+  ql = new QLearning(200);
 
 }
