@@ -1,8 +1,3 @@
-/*
-this Main sketch was only made to test the person class
-*/
-
-
 Person[] persons;
 int val = 10;
 PVector test2 = new PVector(40,80);
