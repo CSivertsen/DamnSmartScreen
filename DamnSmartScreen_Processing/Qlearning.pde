@@ -1,4 +1,3 @@
-import java.util.Random;
 class QLearning {
 
   double alpha = 0.1; // Learning rate
@@ -10,11 +9,14 @@ class QLearning {
   int[][] R;       // Reward lookup
 
   int statesCount; 
+  int posListSize = 10;
+  ArrayList<Integer> lastPositions = new ArrayList<Integer>();
 
   QLearning(int size) {
     statesCount = size;
     R = new int[statesCount][statesCount];
     Q = new double[statesCount][statesCount];
+    
   }
 
   // Prints the weight for all states in the current situation to the console. 
@@ -22,25 +24,38 @@ class QLearning {
     println("Policy:");
   }
 
-  int move(int[] lastPositions, boolean reinforce) {
+  int move(boolean reinforce) {
     
-    int currentState = lastPositions[0];
+    int currentState = lastPositions.get(0);
 
     if (reinforce) {
       int backtrack = 3;
       
       for (int i = 0; i < backtrack; i++){
-        double q = Q[lastPositions[i+1]][lastPositions[i]];
-        double maxQ = maxQ(lastPositions[i]);
-        int r = R[lastPositions[i+1]][lastPositions[i]];
-        double value = q + alpha * (r + gamma * maxQ - q) * backtrack/(i+1); //Not a beautiful way of backpropagating, but i think it works for now.
-        Q[lastPositions[i+1]][lastPositions[i]] = value;
+        double q = Q[lastPositions.get(i+1)][lastPositions.get(1)];
+        double maxQ = maxQ(lastPositions.get(1));
+        int r = R[lastPositions.get(i+1)][lastPositions.get(1)];
+        double value = q + alpha * (r + gamma * maxQ - q) * backtrack/(i+1); //Not a beautiful way of back-propagating, but I think it works for now.
+        Q[lastPositions.get(i+1)][lastPositions.get(1)] = value;
       }
     }
     
     int nextState = getPolicyFromState(currentState);
+    setLastPositions(nextState);
     return nextState;
   }
+  
+  void setLastPositions(int p) {
+    if (lastPositions.size() == 0) {
+      lastPositions.add(p);
+    } else if (lastPositions.size() > 0 && lastPositions.size() <= posListSize) {
+      if (lastPositions.size() == posListSize) {
+        lastPositions.remove(posListSize+1);
+      }
+      lastPositions.add(0, p);
+    }
+  }
+  
 
   double maxQ(int nextState) {
     double maxValue = Double.MIN_VALUE;
