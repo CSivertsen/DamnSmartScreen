@@ -16,7 +16,6 @@ class QLearning {
     statesCount = size;
     R = new int[statesCount][statesCount];
     Q = new double[statesCount][statesCount];
-    
   }
 
   // Prints the weight for all states in the current situation to the console. 
@@ -24,27 +23,27 @@ class QLearning {
     println("Policy:");
   }
 
-  int move(boolean reinforce) {
-    
+  int move() {
     int currentState = lastPositions.get(0);
-
-    if (reinforce) {
-      int backtrack = 3;
-      
-      for (int i = 0; i < backtrack; i++){
-        double q = Q[lastPositions.get(i+1)][lastPositions.get(1)];
-        double maxQ = maxQ(lastPositions.get(1));
-        int r = R[lastPositions.get(i+1)][lastPositions.get(1)];
-        double value = q + alpha * (r + gamma * maxQ - q) * backtrack/(i+1); //Not a beautiful way of back-propagating, but I think it works for now.
-        Q[lastPositions.get(i+1)][lastPositions.get(1)] = value;
-      }
-    }
-    
     int nextState = getPolicyFromState(currentState);
     setLastPositions(nextState);
+    
+    //Consider if this should call the arduino interface directly
     return nextState;
   }
-  
+
+  void reinforce() {
+    int backtrack = 3;
+
+    for (int i = 0; i < backtrack; i++) {
+      double q = Q[lastPositions.get(i+1)][lastPositions.get(1)];
+      double maxQ = maxQ(lastPositions.get(1));
+      int r = R[lastPositions.get(i+1)][lastPositions.get(1)];
+      double value = q + alpha * (r + gamma * maxQ - q) * backtrack/(i+1); //Not a beautiful way of back-propagating, but I think it works for now.
+      Q[lastPositions.get(i+1)][lastPositions.get(1)] = value;
+    }
+  }
+
   void setLastPositions(int p) {
     if (lastPositions.size() == 0) {
       lastPositions.add(p);
@@ -55,7 +54,7 @@ class QLearning {
       lastPositions.add(0, p);
     }
   }
-  
+
 
   double maxQ(int nextState) {
     double maxValue = Double.MIN_VALUE;
