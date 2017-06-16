@@ -1,9 +1,8 @@
 class VideoAnalysis {
-PImage prevFrame;
+  PImage prevFrame;
 
 
   int threshold = 100;
-
   float r1;
   float g1;
   float b1;
@@ -29,9 +28,7 @@ PImage prevFrame;
   VideoAnalysis(Capture v) {
     video =  v;
     video.start();
-  prevFrame = createImage(1280, 720, RGB);
-
-
+    prevFrame = createImage(1280, 720, RGB);
   }
 
   void update() {
@@ -43,21 +40,10 @@ PImage prevFrame;
         prevFrame.copy(video, 0, 0, video.width, video.height, 0, 0, video.width, video.height);   //Screesnhot van video input
         prevFrame.updatePixels();  //put screenshot in PrevFrame
         count++;
-        println(count);
+        //println(count);
       }
     }
-    counter = 0;
-    for (Blob b : blobs) {
-      int id = b.getId();
-      //println(b.getId());
-      println("counter: " + counter +" ID: " + id);
-      if (id == counter) {
-        available = counter+1;
-      } else {
-        available = 0;
-      }
-      counter++;
-    } 
+
 
     loadPixels();
     video.loadPixels();
@@ -110,7 +96,7 @@ PImage prevFrame;
             boolean found = false;
             for (Blob b : currentBlobs) {
               if (b.isNear(x, y)) {
-                b.add(x, y);
+                b.setPos(x, y);
                 found = true;
                 break;
               }
@@ -136,10 +122,12 @@ PImage prevFrame;
 
     // There are no blobs!
     if (blobs.isEmpty() && currentBlobs.size() > 0) {
-      println("Adding blobs!");
+      //println("Adding blobs!");
       for (Blob b : currentBlobs) {
-        b.id = available;
+        b.setId(blobCounter);
         blobs.add(b);
+        //persons.add(new Person(blobCounter, b.getCenter()));
+        
         blobCounter++;
       }
     } else if (blobs.size() <= currentBlobs.size()) {
@@ -164,9 +152,11 @@ PImage prevFrame;
       for (Blob b : currentBlobs) {
         if (!b.taken) {
           //b.id = blobCounter;
-          b.id = available;
+          b.id = blobCounter;
 
           blobs.add(b);
+          //persons.add(new Person(blobCounter, b.getCenter()));
+          
           blobCounter++;
         }
       }
@@ -199,6 +189,7 @@ PImage prevFrame;
         Blob b = blobs.get(i);
         if (!b.taken) {
           blobs.remove(i);
+          //persons.remove(i);
         }
       }
     }
@@ -220,19 +211,6 @@ PImage prevFrame;
 
     delay(50);
     fill(255, 0, 0);
-    storeInPerson();
-  }
-  void storeInPerson() {
-
-    println("length: "+ blobs.size());
-    //blobLength = blobs.size();
-    println(blobs);
-    for (Blob b : blobs) {
-      int id = b.getId();
-      PVector v = b.getCenter();
-      Person p = new Person(id, v);
-      persons.add(p);
-      p.printInfo();
-    }
+    //storeInPerson();
   }
 }

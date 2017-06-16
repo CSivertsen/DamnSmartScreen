@@ -13,12 +13,17 @@ class Blob {
   int distThreshold = 180;
 
   boolean taken = false;
+  
+  Person myPerson;
 
   Blob(float x, float y) {
     minx = x;
     miny = y;
     maxx = x;
     maxy = y;
+    
+    myPerson = new Person(id, getCenter());
+    persons.add(myPerson);
   }
 
   void show() {
@@ -38,7 +43,7 @@ class Blob {
   }
 
 
-  void add(float x, float y) {
+  void setPos(float x, float y) {
     minx = min(minx, x);
     miny = min(miny, y);
     maxx = max(maxx, x);
@@ -50,6 +55,7 @@ class Blob {
     maxx = other.maxx;
     miny = other.miny;
     maxy = other.maxy;
+    myPerson = other.myPerson; 
   }
 
   float size() {
@@ -64,6 +70,11 @@ class Blob {
 
   int getId() {
     return id;
+  }
+  
+  void setId(int _id) {
+  id = _id;
+  myPerson.setId(id);
   }
 
   boolean isNear(float x, float y) {

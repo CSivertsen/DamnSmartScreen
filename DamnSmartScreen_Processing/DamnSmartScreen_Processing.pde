@@ -1,9 +1,6 @@
 import processing.video.*;
 import processing.serial.*;
 
-//Person[] persons;
-//int val = 10;
-//PVector test2 = new PVector(40,80);
 VideoAnalysis va;
 
 Capture video;
@@ -21,7 +18,7 @@ void setup() {
   size(1280, 720); //needed for video
 
   String[] cameras = Capture.list();
-  video = new Capture(this, width, height, 30);
+  video = new Capture(this, width, height, 10); //30
 
 
   if (cameras.length == 0) {
@@ -33,7 +30,7 @@ void setup() {
       print(i);
       println(cameras[i]);
     }
-    video = new Capture(this, cameras[38]);   //38
+    video = new Capture(this, cameras[6]);   //38
   }
 
   va = new VideoAnalysis(video);
