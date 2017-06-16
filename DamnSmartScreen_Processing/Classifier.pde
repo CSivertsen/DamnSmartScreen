@@ -39,24 +39,27 @@ class Classifier {
       //    personOfInterest = persons.get(0);
 
       //if (!personOfInterest.isAttentive) {
-        if (persons.size() == 1){
-          personOfInterest = persons.get(0);
-        } else if (persons.size() > 1) {
-          float[] distances = new float[persons.size()];
+      if (persons.size() == 1) {
+        personOfInterest = persons.get(0);
+      } else if (persons.size() > 1) {
+        float[] distances = new float[persons.size()];
 
-          // get distances from every person relative to the screen
-          for (int i = 0; i < persons.size(); i++) {
-            ps[i] = persons.get(i);
-            PVector screenToPerson = PVector.sub(center, ps[i].avPosition);
-            distances[i] = screenToPerson.mag();
-          }
 
+        // get distances from every person relative to the screen
+        for (int i = 0; i < persons.size(); i++) {
+          ps[i] = persons.get(i);
+          PVector screenToPerson = PVector.sub(center, ps[i].avPosition);
+          distances[i] = screenToPerson.mag();
+        }
+
+        if (!personOfInterest.isAttentive) {
           // find the index number of the person that is closest 
           // to the screen and set that person to be personOfInterest
           // if he is also attentive (showing attention)
           int minIndex = 0;
           float min = max(distances); 
           for (int i = 0; i < distances.length; i++) {
+            checkAttention(ps[i], 20); // twenty (arbitrary number) is related to the speed people are allowed to move backwards
             if (ps[i].isAttentive()) {
               if (distances[i] < min) {
                 min = distances[i];
@@ -66,9 +69,13 @@ class Classifier {
             }
           }
         }
-        if (personOfInterest.isAttentive != lastAttention)
-          lastAttention = true;
       }
+      if (personOfInterest != lastPersonOfInterest) {
+        lastPersonOfInterest = personOfInterest;
+      }
+      //if (personOfInterest.isAttentive != lastAttention) {
+      //  lastAttention = true;
     }
   }
+}
 }
