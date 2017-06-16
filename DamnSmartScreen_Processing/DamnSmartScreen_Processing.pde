@@ -1,16 +1,16 @@
-Person[] persons;
+ArrayList<Person> persons = new ArrayList<Person>();
 int val = 10;
 PVector test2 = new PVector(40,80);
 
 void setup() {
-  persons = new Person[val];
-  PVector testV = new PVector(20,30);
-  for (int i = 0; i < val; i++) {
-    persons[i] = new Person(val, testV);
-  }
-  persons[0].setPosition(test2);
-  persons[0].printInfo();
+  //persons = new Person[val];
+  //PVector testV = new PVector(20,30);
+  //for (int i = 0; i < val; i++) {
+  //  persons[i] = new Person(val, testV);
+  //}
+  //persons[0].setPosition(test2);
+  //persons[0].printInfo();
 }
-
+//
 void draw() {
 }
