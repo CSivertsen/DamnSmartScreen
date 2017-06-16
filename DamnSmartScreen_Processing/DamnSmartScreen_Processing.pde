@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 import processing.video.*;
 import processing.serial.*;
 
@@ -6,12 +6,9 @@ VideoAnalysis va;
 
 Capture video;
 
-
-=======
 ArrayList<Person> persons = new ArrayList<Person>();
 int val = 10;
 PVector test2 = new PVector(40,80);
->>>>>>> master
 
 void setup() {
   //persons = new Person[val];
@@ -21,11 +18,10 @@ void setup() {
   //}
   //persons[0].setPosition(test2);
   //persons[0].printInfo();
-<<<<<<< HEAD
   size(1280, 720); //needed for video
 
   String[] cameras = Capture.list();
-  video = new Capture(this, width, height, 10); //30
+  video = new Capture(this, width, height, 30); //30
 
 
   if (cameras.length == 0) {
@@ -37,12 +33,10 @@ void setup() {
       print(i);
       println(cameras[i]);
     }
-    video = new Capture(this, cameras[6]);   //38
+    video = new Capture(this, cameras[38]);   //38
   }
 
   va = new VideoAnalysis(video);
-=======
->>>>>>> master
 }
 //
 void draw() {
