@@ -29,29 +29,42 @@ class Classifier {
     lastRelDistLength = relDistLength;
     lastscreenToPerson = screenToPerson;
   }
+  
+  boolean checkPersonOfInterestPresent(Person[] ps, Person pOI){
+    for (int i = 0; i < ps.size(); i++) {
+      if (pOI.id == ps[i].id){
+          return  true;
+      } else {
+        return false;
+      }
+    } 
+  }
 
   void selectPersonOfInterest() {
     if (!persons.isEmpty()) {
       Person[] ps = new Person[persons.size()];
 
+      
+      
       //if (!personOfInterest.isAttentive) {
-      //  if (persons.size() == 1 && ps[0].isAttentive) {
-      //    personOfInterest = persons.get(0);
-
-      //if (!personOfInterest.isAttentive) {
-      if (persons.size() == 1) {
+      if (ps.size() == 1) {
         personOfInterest = persons.get(0);
       } else if (persons.size() > 1) {
         float[] distances = new float[persons.size()];
 
 
         // get distances from every person relative to the screen
-        for (int i = 0; i < persons.size(); i++) {
+        // it also checks the attention of every person
+        for (int i = 0; i < ps.size(); i++) {
           ps[i] = persons.get(i);
           PVector screenToPerson = PVector.sub(center, ps[i].avPosition);
           distances[i] = screenToPerson.mag();
+          
+          checkAttention(ps[i], 20); // twenty (arbitrary number) is related to the speed people are allowed to move backwards
         }
 
+        
+        if (personOfinterestPresent){
         if (!personOfInterest.isAttentive) {
           // find the index number of the person that is closest 
           // to the screen and set that person to be personOfInterest
@@ -59,7 +72,6 @@ class Classifier {
           int minIndex = 0;
           float min = max(distances); 
           for (int i = 0; i < distances.length; i++) {
-            checkAttention(ps[i], 20); // twenty (arbitrary number) is related to the speed people are allowed to move backwards
             if (ps[i].isAttentive()) {
               if (distances[i] < min) {
                 min = distances[i];
@@ -70,12 +82,6 @@ class Classifier {
           }
         }
       }
-      if (personOfInterest != lastPersonOfInterest) {
-        lastPersonOfInterest = personOfInterest;
-      }
-      //if (personOfInterest.isAttentive != lastAttention) {
-      //  lastAttention = true;
     }
   }
-}
 }
