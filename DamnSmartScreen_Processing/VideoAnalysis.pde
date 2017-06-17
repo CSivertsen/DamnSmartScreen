@@ -1,9 +1,8 @@
 class VideoAnalysis {
-PImage prevFrame;
+  PImage prevFrame;
 
 
   int threshold = 100;
-
   float r1;
   float g1;
   float b1;
@@ -29,9 +28,7 @@ PImage prevFrame;
   VideoAnalysis(Capture v) {
     video =  v;
     video.start();
-  prevFrame = createImage(1280, 720, RGB);
-
-
+    prevFrame = createImage(1280, 720, RGB);
   }
 
   void update() {
@@ -43,21 +40,10 @@ PImage prevFrame;
         prevFrame.copy(video, 0, 0, video.width, video.height, 0, 0, video.width, video.height);   //Screesnhot van video input
         prevFrame.updatePixels();  //put screenshot in PrevFrame
         count++;
-        println(count);
+        //println(count);
       }
     }
-    counter = 0;
-    for (Blob b : blobs) {
-      int id = b.getId();
-      //println(b.getId());
-      println("counter: " + counter +" ID: " + id);
-      if (id == counter) {
-        available = counter+1;
-      } else {
-        available = 0;
-      }
-      counter++;
-    } 
+
 
     loadPixels();
     video.loadPixels();
@@ -110,7 +96,7 @@ PImage prevFrame;
             boolean found = false;
             for (Blob b : currentBlobs) {
               if (b.isNear(x, y)) {
-                b.add(x, y);
+                b.setPos(x, y);
                 found = true;
                 break;
               }
@@ -135,20 +121,24 @@ PImage prevFrame;
     }
 
     // There are no blobs!
-    if (blobs.isEmpty() && currentBlobs.size() > 0) {
-      println("Adding blobs!");
+    if (persons.isEmpty() && currentBlobs.size() > 0) {
+      //println("Adding blobs!");
       for (Blob b : currentBlobs) {
-        b.id = available;
-        blobs.add(b);
+        b.setId(blobCounter);
+        //blobs.add(b);
+        //perons.add(new Person(blobCounter, 
+        persons.add(new Person(blobCounter, b.getCenter()));
+        
         blobCounter++;
       }
-    } else if (blobs.size() <= currentBlobs.size()) {
+    } else if (persons.size() <= currentBlobs.size()) {
       // Match whatever blobs you can match
-      for (Blob b : blobs) {
+      for (Person p:persons) {
         float recordD = 1000;
         Blob matched = null;
         for (Blob cb : currentBlobs) {
-          PVector centerB = b.getCenter();
+          
+          PVector centerB = (PVector) p.getLastPositions().get(0);
           PVector centerCB = cb.getCenter();         
           float d = PVector.dist(centerB, centerCB);
           if (d < recordD && !cb.taken) {
@@ -157,36 +147,38 @@ PImage prevFrame;
           }
         }
         matched.taken = true;
-        b.become(matched);
+        p.addPosition(matched.getCenter());
       }
 
       // Whatever is leftover make new blobs
       for (Blob b : currentBlobs) {
         if (!b.taken) {
           //b.id = blobCounter;
-          b.id = available;
+          b.id = blobCounter;
 
-          blobs.add(b);
+          //blobs.add(b);
+          persons.add(new Person(blobCounter, b.getCenter()));
+          
           blobCounter++;
         }
       }
-    } else if (blobs.size() > currentBlobs.size()) {
-      for (Blob b : blobs) {
-        b.taken = false;
+    } else if (persons.size() > currentBlobs.size()) {
+      for (Person p : persons) {
+        p.taken = false;
       }
 
 
       // Match whatever blobs you can match
       for (Blob cb : currentBlobs) {
         float recordD = 1000;
-        Blob matched = null;
-        for (Blob b : blobs) {
-          PVector centerB = b.getCenter();
+        Person matched = null;
+        for (Person p : persons) {
+          PVector centerB = (PVector)p.getLastPositions().get(0);
           PVector centerCB = cb.getCenter();         
           float d = PVector.dist(centerB, centerCB);
-          if (d < recordD && !b.taken) {
+          if (d < recordD && !p.taken) {
             recordD = d; 
-            matched = b;
+            matched = p;
           }
         }
         if (matched != null) {
@@ -195,17 +187,21 @@ PImage prevFrame;
         }
       }
 
-      for (int i = blobs.size() - 1; i >= 0; i--) {
-        Blob b = blobs.get(i);
-        if (!b.taken) {
-          blobs.remove(i);
+      for (int i = persons.size() - 1; i >= 0; i--) {
+        Person p = persons.get(i);
+        if (!p.taken) {
+          //blobs.remove(i);
+          persons.remove(i);
         }
       }
     }
 
-    for (Blob b : blobs) {
+    for (Blob b: currentBlobs) {
       b.show();
     } 
+    for(Person p: persons){
+      p.show();
+    }
 
 
 
@@ -220,19 +216,14 @@ PImage prevFrame;
 
     delay(50);
     fill(255, 0, 0);
-    storeInPerson();
-  }
-  void storeInPerson() {
-
-    println("length: "+ blobs.size());
-    //blobLength = blobs.size();
-    println(blobs);
-    for (Blob b : blobs) {
-      int id = b.getId();
-      PVector v = b.getCenter();
-      Person p = new Person(id, v);
-      persons.add(p);
-      p.printInfo();
+    //storeInPerson();
+    
+    //Print personslist
+    
+    for(Person p : persons){
+      int id = p.getId();
+      println("Id = "+ id);
     }
+    
   }
 }
