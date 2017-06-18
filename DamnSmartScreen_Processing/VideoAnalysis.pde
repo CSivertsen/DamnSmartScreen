@@ -1,6 +1,6 @@
 class VideoAnalysis {
   PImage prevFrame;
-
+  int centerSize = 100;
 
   int threshold = 100;
   float r1;
@@ -19,11 +19,6 @@ class VideoAnalysis {
   float distThreshold = 180;
   ArrayList<Blob> blobs = new ArrayList<Blob>();
   int blobLength;
-
-  //PERSON CLASS
-  ArrayList<Person> persons = new ArrayList<Person>();
-
-
 
   VideoAnalysis(Capture v) {
     video =  v;
@@ -50,24 +45,19 @@ class VideoAnalysis {
 
     ArrayList<Blob> currentBlobs = new ArrayList<Blob>();
 
-    for (int x = 0; x < video.width; x = x+20 ) 
-    {
-      for (int y = 0; y < video.height; y = y+20 ) 
-      {
-        if (x > width/2 - 125 & x < width/2 + 125 && y > height/2 - 125 && y < height/2 + 125) 
-        {
-        } else 
-        {
+    for (int x = 0; x < video.width; x = x+20 ) {
+      for (int y = 0; y < video.height; y = y+20 ) {
+        if (x > width/2 - centerSize/2 & x < width/2 + centerSize/2 && y > height/2 - centerSize/2 && y < height/2 + centerSize/2) {
+          // Ignoring all pixels in the center of the screen
+        } else {
           r1 = 0;
           g1 = 0;
           b1 = 0;
           r2 = 0;
           g2 = 0;
           b2 = 0;
-          for (int i = 0; i < 20; i++) 
-          {
-            for (int s = 0; s < 20; s++) 
-            {
+          for (int i = 0; i < 20; i++) {
+            for (int s = 0; s < 20; s++) {
               int loc = x+i + (y+s)*video.width;            
               color current = video.pixels[loc];      
               color previous = prevFrame.pixels[loc]; 
@@ -128,16 +118,16 @@ class VideoAnalysis {
         //blobs.add(b);
         //perons.add(new Person(blobCounter, 
         persons.add(new Person(blobCounter, b.getCenter()));
-        
+
         blobCounter++;
       }
     } else if (persons.size() <= currentBlobs.size()) {
       // Match whatever blobs you can match
-      for (Person p:persons) {
+      for (Person p : persons) {
         float recordD = 1000;
         Blob matched = null;
         for (Blob cb : currentBlobs) {
-          
+
           PVector centerB = (PVector) p.getLastPositions().get(0);
           PVector centerCB = cb.getCenter();         
           float d = PVector.dist(centerB, centerCB);
@@ -158,7 +148,7 @@ class VideoAnalysis {
 
           //blobs.add(b);
           persons.add(new Person(blobCounter, b.getCenter()));
-          
+
           blobCounter++;
         }
       }
@@ -191,19 +181,18 @@ class VideoAnalysis {
         Person p = persons.get(i);
         if (!p.taken) {
           //blobs.remove(i);
+          println("Removing person");
           persons.remove(i);
         }
       }
     }
 
-    for (Blob b: currentBlobs) {
+    for (Blob b : currentBlobs) {
       b.show();
     } 
-    for(Person p: persons){
+    for (Person p : persons) {
       p.show();
     }
-
-
 
     textAlign(RIGHT);
     fill(0);
@@ -217,13 +206,6 @@ class VideoAnalysis {
     delay(50);
     fill(255, 0, 0);
     //storeInPerson();
-    
-    //Print personslist
-    
-    for(Person p : persons){
-      int id = p.getId();
-      println("Id = "+ id);
-    }
-    
+
   }
 }

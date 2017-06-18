@@ -2,13 +2,14 @@ class Person {
   int id;
   int posListSize = 100; // amount of lastPositions that are being stored
   PVector avPosition;
-  boolean isAttentive;
+  boolean isAttentive = true;
   ArrayList<PVector> lastPositions = new ArrayList<PVector>();
-  boolean taken = false; //ADDED BY TEUN AND DAAN
+  boolean taken = false;
 
   Person(int i, PVector p) {
     id = i;
     addPosition(p);
+    println("New person created");
   }
 
   int getId() {
@@ -38,7 +39,7 @@ class Person {
       lastPositions.add(p);
     } else if (lastPositions.size() > 0 && lastPositions.size() <= posListSize) {
       if (lastPositions.size() == posListSize) {
-        lastPositions.remove(posListSize - 1); // ADDED BY TEUN AND DAAN --> changed to - 1 instead of + 1
+        lastPositions.remove(posListSize - 1);
       }
       lastPositions.add(0, p);
     }
@@ -84,6 +85,15 @@ class Person {
     //miny = other.miny;
     //maxy = other.maxy;
     //myPerson = other.myPerson; 
+  }
+  
+  //Simple comparison based on ID
+  boolean equals(Person other){
+    if ( id == other.getId()){
+      return true;
+    } else {
+      return false;
+    }
   }
  
 }
