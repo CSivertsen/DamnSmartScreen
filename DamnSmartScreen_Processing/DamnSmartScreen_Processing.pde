@@ -18,7 +18,7 @@ void setup() {
   //}
   //persons[0].setPosition(test2);
   //persons[0].printInfo();
-  size(1280, 720); //needed for video
+  size(640, 480); //needed for video
 
   String[] cameras = Capture.list();
   video = new Capture(this, width, height, 30); //30
@@ -33,7 +33,7 @@ void setup() {
       print(i);
       println(cameras[i]);
     }
-    video = new Capture(this, cameras[38]);   //38
+    video = new Capture(this, cameras[13]);   //38
   }
 
   va = new VideoAnalysis(video);
