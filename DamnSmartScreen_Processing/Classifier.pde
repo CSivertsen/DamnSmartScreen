@@ -2,31 +2,38 @@
 class Classifier {
   Person personOfInterest;
   PVector center;
-  PVector lastscreenToPerson;  
+  PVector lastScreenToPerson;  
   float lastRelDistLength;
-  int speedThreshold = 10; // ten (arbitrary number) is related to the speed people are allowed to move backwards
+  int speedThreshold = 5; // ten (arbitrary number) is related to the speed people are allowed to move backwards
   QLearning ql; 
-  
+
 
   Classifier(PVector c, QLearning _ql) {
     ql  = _ql;
-    center = c; // center of the screen where the truning screen is placed
+    center = c; // center of the screen where the turning screen is placed
+
+    lastScreenToPerson = new PVector(0, 0);
   }
 
   // speedBound should be a constant defining below what speed
   // from moving away from the screen a person loses attention
-  void checkAttention(Person p, float speedBound) {        PVector pos = p.getAveragePosition();
+  void checkAttention(Person p, float speedBound) {        
+    PVector pos = p.getAveragePosition();
     PVector screenToPerson = PVector.sub(center, pos);
 
-    float lastscreenToPersonLenght = lastscreenToPerson.mag();
+    float lastScreenToPersonLength = lastScreenToPerson.mag();
     float screenToPersonLength = screenToPerson.mag();
 
-    PVector relDist = PVector.sub(screenToPerson, lastscreenToPerson);
+    PVector relDist = PVector.sub(screenToPerson, lastScreenToPerson);
     float relDistLength = relDist.mag();
 
-    if (relDistLength >= speedBound && lastscreenToPersonLenght < screenToPersonLength) { 
+
+  println("lastScreenToPersonLength" + lastScreenToPersonLength);
+  println("screenToPersonLength" + screenToPersonLength);
+
+    if (relDistLength >= speedBound && lastScreenToPersonLength < screenToPersonLength) { 
       p.setAttention(false);
-      if (p.equals(getPersonOfInterest())){
+      if (p.equals(getPersonOfInterest())) {
         ql.reinforce();
       }
     } else {
@@ -34,15 +41,17 @@ class Classifier {
     }    
 
     lastRelDistLength = relDistLength;
-    lastscreenToPerson = screenToPerson;
+    lastScreenToPerson = screenToPerson;
   }
 
   boolean personOfInterestPresent(Person pOI) {
-    if (!persons.isEmpty()) {
-      for (int i = 0; i < persons.size(); i++ ) {
-        if (pOI.equals(persons.get(i))) {
-          return  true;
-        } 
+    if (pOI != null) {
+      if (!persons.isEmpty()) {
+        for (int i = 0; i < persons.size(); i++ ) {
+          if (pOI.equals(persons.get(i))) {
+            return  true;
+          }
+        }
       }
     }
     return false;
@@ -50,22 +59,20 @@ class Classifier {
 
   void selectPersonOfInterest() {
     if (!persons.isEmpty()) {
-      ArrayList<Person> ps = new ArrayList();
-
       if (personOfInterest == null || !personOfInterestPresent(personOfInterest) ||  personOfInterest.isAttentive() == false) {
         if (persons.size() == 1) {
           personOfInterest = persons.get(0);
+          checkAttention(persons.get(0), speedThreshold); 
         } else if (persons.size() > 1) {
           float[] distances = new float[persons.size()];
 
           // get distances from every person relative to the screen
           // it also checks the attention of every person
           for (int i = 0; i < persons.size(); i++) {
-            ps.add(persons.get(i));
-            PVector screenToPerson = PVector.sub(center, ps.get(i).avPosition);
+            PVector screenToPerson = PVector.sub(center, persons.get(i).avPosition);
             distances[i] = screenToPerson.mag();
 
-            checkAttention(ps.get(i), speedThreshold); 
+            checkAttention(persons.get(i), speedThreshold); 
 
             if (personOfInterestPresent(personOfInterest)) {
               if (!personOfInterest.isAttentive) {
@@ -76,7 +83,7 @@ class Classifier {
                 int minIndex = 0;
                 float min = max(distances); 
                 for (int j = 0; j < distances.length; j++) {
-                  if (ps.get(j).isAttentive()) {
+                  if (persons.get(j).isAttentive()) {
                     if (distances[j] < min) {
                       min = distances[j];
                       minIndex = j;
@@ -103,11 +110,11 @@ class Classifier {
       return null;
     }
   }
-  
-  void printPOI(){
-    if(getPersonOfInterest() != null){
+
+  void printPOI() {
+    if (getPersonOfInterest() != null) {
       Person p = getPersonOfInterest();
-      println("POI is " + p.id); 
+      println("POI is " + p.id);
     } else {
       println("No POI have been detected");
     }
