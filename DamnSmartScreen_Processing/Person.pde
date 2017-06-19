@@ -5,6 +5,7 @@ class Person {
   boolean isAttentive = true;
   ArrayList<PVector> lastPositions = new ArrayList<PVector>();
   boolean taken = false;
+  int averageOver = 30;
 
   Person(int i, PVector p) {
     id = i;
@@ -19,7 +20,7 @@ class Person {
   void averagePosition(int avListSize) {
     float x = 0;
     float y = 0;
-    if (avListSize < lastPositions.size()) {
+    if (avListSize > lastPositions.size()) {
       avListSize = lastPositions.size();
     }
     for (int i = 0; i < avListSize; i++) {
@@ -27,8 +28,8 @@ class Person {
       x += pos.x;
       y += pos.y;
     }
-    x /= lastPositions.size();
-    y /= lastPositions.size();
+    x /= avListSize;
+    y /= avListSize;
     avPosition = new PVector(x, y);
   }
 
@@ -43,6 +44,7 @@ class Person {
       }
       lastPositions.add(0, p);
     }
+    averagePosition(averageOver);
   }
 
   PVector getAveragePosition() {
@@ -70,30 +72,33 @@ class Person {
   }
 
   void show() {  // ADDED BY TEUN AND DAAN
-  PVector pos = (PVector) getLastPositions().get(0);
+    PVector pos = (PVector) getLastPositions().get(0);
     textAlign(CENTER);
     textSize(64);
     fill(0);
-    text(id,pos.x,pos.y);
+    text(id, pos.x, pos.y);
   }
 
   void become(Blob other) {
-    PVector otherPos = new PVector((other.minx+other.maxx)/2,(other.miny+other.maxy)/2);
+    PVector otherPos = new PVector((other.minx+other.maxx)/2, (other.miny+other.maxy)/2);
     addPosition(otherPos);
     //minx = other.minx;
     //maxx = other.maxx;
     //miny = other.miny;
     //maxy = other.maxy;
-    //myPerson = other.myPerson; 
+    //myPerson = other.myPerson;
   }
-  
+
   //Simple comparison based on ID
-  boolean equals(Person other){
-    if ( id == other.getId()){
-      return true;
+  boolean equals(Person other) {
+    if (other != null) {
+      if ( id == other.getId()) {
+        return true;
+      } else {
+        return false;
+      }
     } else {
       return false;
     }
   }
- 
 }

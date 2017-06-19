@@ -46,12 +46,13 @@ class QLearning {
       println("Reinforcing");
       int backtrack = 3;
 
-      for (int i = 0; i < backtrack; i++) {
-        double q = Q[lastPositions.get(i+1)][lastPositions.get(1)];
-        double maxQ = maxQ(lastPositions.get(1));
-        int r = R[lastPositions.get(i+1)][lastPositions.get(1)];
+      for (int i = 0; i < backtrack-1; i++) {
+        double q = Q[lastPositions.get(i+1)][lastPositions.get(i)];
+        double maxQ = maxQ(lastPositions.get(i));
+        //int r = R[lastPositions.get(i+1)][lastPositions.get(1)];
+        int r = penalty;
         double value = q + alpha * (r + gamma * maxQ - q) * backtrack/(i+1); //Not a beautiful way of back-propagating, but I think it works for now.
-        Q[lastPositions.get(i+1)][lastPositions.get(1)] = value;
+        Q[lastPositions.get(i+1)][lastPositions.get(i)] = value;
       }
     }
   }
@@ -70,7 +71,7 @@ class QLearning {
 
   //Returns the highest Q value from the available states
   double maxQ(int nextState) {
-    double maxValue = Double.MIN_VALUE;
+    double maxValue = -Double.MAX_VALUE;
     for (int nextAction = 0; nextAction < statesCount; nextAction++) {
       double value = Q[nextState][nextAction];
       if (value > maxValue) {
@@ -82,8 +83,8 @@ class QLearning {
 
   //Find the state with the highest Q value from the available states 
   int getPolicyFromState(int state) {
-
-    double maxValue = Double.MIN_VALUE;
+    ArrayList<Integer> bestStates = new ArrayList(); 
+    double maxValue = -Double.MAX_VALUE;
     int policyGotoState = state;
 
     // Pick to move to the state that has the maximum Q value
@@ -92,9 +93,19 @@ class QLearning {
 
       if (value > maxValue) {
         maxValue = value;
-        policyGotoState = nextState;
       }
     }
+    
+    for (int nextState = 0; nextState < statesCount; nextState++) {
+      double value = Q[state][nextState];
+
+      if (value == maxValue) {
+        bestStates.add(nextState);
+      }
+    }
+    
+    policyGotoState = bestStates.get(round(random(bestStates.size()-1)));
+    
     return policyGotoState;
   }
 
