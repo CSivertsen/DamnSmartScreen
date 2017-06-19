@@ -6,12 +6,16 @@ Classifier c;
 QLearning ql;
 Capture video;
 Fakeduino f; 
+ArduinoInterface ai;
+
+Serial port;
 
 ArrayList<Person> persons = new ArrayList<Person>();
 int motorsteps = 200;
 
 void setup() {
-  size(640, 480); //Screen size should correspond to camera resolution
+
+  size(1280, 720); //Screen size should correspond to camera resolution
 
   //Initializing camera
   String[] cameras = Capture.list();
@@ -26,21 +30,26 @@ void setup() {
       print(i);
       println(cameras[i]);
     }
-    video = new Capture(this, cameras[13]); //38 for external webcam
+    video = new Capture(this, cameras[6]); //38 for external webcam
   }
   
   //Initializing objects
   va = new VideoAnalysis(video);
   ql = new QLearning(motorsteps, true, true);
   c = new Classifier(new PVector(width/2, height/2), ql);
-  f = new Fakeduino(ql); 
+  //f = new Fakeduino(ql); 
+    
+  String p = Serial.list()[0];
+  port = new Serial(this, p, 9600);
+  ai = new ArduinoInterface(ql);
+
 }
 
 void draw() {
   //VideoAnalysis, Classification and Fakeduino is run on every frame. 
   va.update();
   c.selectPersonOfInterest();
-  f.update();
+  //f.update();
 }
 
 void keyReleased(){
@@ -60,4 +69,8 @@ void keyReleased(){
   } else if (key == 's'){
     ql.savePolicy();
   }
+}
+
+void serialEvent(Serial event) {
+  ai.serialE(event);
 }
