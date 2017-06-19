@@ -15,6 +15,15 @@ class Classifier {
     lastScreenToPerson = new PVector(0, 0);
   }
 
+  void update(float speedbound) {
+    if (!persons.isEmpty()) {
+      for (int i = 0; i < persons.size(); i ++) {
+        checkAttention(persons.get(i), speedbound);
+      }
+      selectPersonOfInterest();
+    }
+  }
+
   // speedBound should be a constant defining below what speed
   // from moving away from the screen a person loses attention
   void checkAttention(Person p, float speedBound) {        
@@ -28,8 +37,8 @@ class Classifier {
     float relDistLength = relDist.mag();
 
 
-  println("lastScreenToPersonLength" + lastScreenToPersonLength);
-  println("screenToPersonLength" + screenToPersonLength);
+    println("lastScreenToPersonLength" + lastScreenToPersonLength);
+    println("screenToPersonLength" + screenToPersonLength);
 
     if (relDistLength >= speedBound && lastScreenToPersonLength < screenToPersonLength) { 
       p.setAttention(false);
@@ -45,6 +54,7 @@ class Classifier {
   }
 
   boolean personOfInterestPresent(Person pOI) {
+
     if (pOI != null) {
       if (!persons.isEmpty()) {
         for (int i = 0; i < persons.size(); i++ ) {
@@ -59,10 +69,11 @@ class Classifier {
 
   void selectPersonOfInterest() {
     if (!persons.isEmpty()) {
+
       if (personOfInterest == null || !personOfInterestPresent(personOfInterest) ||  personOfInterest.isAttentive() == false) {
         if (persons.size() == 1) {
           personOfInterest = persons.get(0);
-          checkAttention(persons.get(0), speedThreshold); 
+          checkAttention(persons.get(0), speedThreshold);
         } else if (persons.size() > 1) {
           float[] distances = new float[persons.size()];
 
@@ -100,23 +111,23 @@ class Classifier {
           }
         }
       }
+      //}
     }
-  }
 
-  Person getPersonOfInterest() {
-    if (personOfInterest != null) {
-      return personOfInterest;
-    } else {
-      return null;
+    Person getPersonOfInterest() {
+      if (personOfInterest != null) {
+        return personOfInterest;
+      } else {
+        return null;
+      }
     }
-  }
 
-  void printPOI() {
-    if (getPersonOfInterest() != null) {
-      Person p = getPersonOfInterest();
-      println("POI is " + p.id);
-    } else {
-      println("No POI have been detected");
+    void printPOI() {
+      if (getPersonOfInterest() != null) {
+        Person p = getPersonOfInterest();
+        println("POI is " + p.id);
+      } else {
+        println("No POI have been detected");
+      }
     }
   }
-}

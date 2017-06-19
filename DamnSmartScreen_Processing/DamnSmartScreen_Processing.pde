@@ -39,7 +39,7 @@ void setup() {
 void draw() {
   //VideoAnalysis, Classification and Fakeduino is run on every frame. 
   va.update();
-  c.selectPersonOfInterest();
+  c.update(5); // set speedbound to 5 and 
   f.update();
 }
 
