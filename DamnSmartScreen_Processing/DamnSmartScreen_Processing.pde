@@ -11,7 +11,7 @@ ArrayList<Person> persons = new ArrayList<Person>();
 int motorsteps = 10;
 
 void setup() {
-  size(1280, 720); //Screen size should correspond to camera resolution
+  size(640, 480); //Screen size should correspond to camera resolution
   //Initializing camera
   String[] cameras = Capture.list();
   video = new Capture(this, width, height, 30); // Last parameter is framerate. Default is 30 
@@ -25,7 +25,7 @@ void setup() {
       print(i);
       println(cameras[i]);
     }
-    video = new Capture(this, cameras[38]); //38 for external webcam
+    video = new Capture(this, cameras[13]); //38 for external webcam
   }
 
   //Initializing objects
@@ -39,7 +39,7 @@ void draw() {
   //VideoAnalysis, Classification and Fakeduino is run on every frame. 
   if (video.available()) { 
     va.update();
-    c.update(); // set speedbound to 5 and 
+    c.update(); 
     f.update();
   }
 }
@@ -61,7 +61,7 @@ void keyReleased() {
   } else if (key == 's') {
     ql.savePolicy();
   } else if (key == CODED){
-    if (keyCode == ENTER){
+    if (keyCode == RETURN){
       ql.reinforce();
     }
   }

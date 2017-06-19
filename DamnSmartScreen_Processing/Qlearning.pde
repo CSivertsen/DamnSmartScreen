@@ -22,7 +22,7 @@ class QLearning {
     lastPositions.add(0);
     isLearning = learning;
     loadPolicy = load;
-    if (loadPolicy){
+    if (loadPolicy) {
       loadPolicy();
     }
   }
@@ -95,7 +95,7 @@ class QLearning {
         maxValue = value;
       }
     }
-    
+
     for (int nextState = 0; nextState < statesCount; nextState++) {
       double value = Q[state][nextState];
 
@@ -103,9 +103,9 @@ class QLearning {
         bestStates.add(nextState);
       }
     }
-    
+
     policyGotoState = bestStates.get(round(random(bestStates.size()-1)));
-    
+
     return policyGotoState;
   }
 
@@ -137,12 +137,33 @@ class QLearning {
       System.out.println("]");
     }
   }
-  
+
   void savePolicy() {
-    
+    ArrayList<TableRow> rows = new ArrayList();
+    Table table = new Table();
+    for (int i = 0; i < statesCount; i++) {
+      table.addColumn(str(i));
+      rows.add(table.addRow());
+    }
+
+    for (int i = 0; i < statesCount; i++) {
+      for (int j = 0; j < statesCount; j++) {
+        table.setDouble(i, j, Q[i][j]);
+      }
+    }
+    saveTable(table, "data/policy.csv");
+    println("Table saved");
   }
-  
+
   void loadPolicy() {
-  
+    Table table;
+    table = loadTable("policy.csv", "header");
+
+    for (int i = 0; i < statesCount; i++) {
+      for (int j = 0; j < statesCount; j++) {
+        Q[i][j] = table.getDouble(i,j);
+      }
+    }
+    println("Table loaded");
   }
 }

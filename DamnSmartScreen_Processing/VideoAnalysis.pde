@@ -22,7 +22,7 @@ class VideoAnalysis {
   VideoAnalysis(Capture v) {
     video =  v;
     video.start();
-    prevFrame = createImage(1280, 720, RGB);
+    prevFrame = createImage(640, 480, RGB);
   }
 
   void update() {
