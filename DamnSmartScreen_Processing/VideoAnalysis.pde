@@ -16,7 +16,6 @@ class VideoAnalysis {
 
   //BLOB
   int blobCounter = 0;
-  float distThreshold = 120;
   ArrayList<Blob> blobs = new ArrayList<Blob>();
   int blobLength;
 
@@ -27,24 +26,49 @@ class VideoAnalysis {
   }
 
   void update() {
-
-    if (video.available() == true) {
-      video.read();
-      if (count < 10) {
-        //prevFrame.loadPixels();
-        prevFrame.copy(video, 0, 0, video.width, video.height, 0, 0, video.width, video.height);   //Screesnhot van video input
-        prevFrame.updatePixels();  //put screenshot in PrevFrame
-        count++;
-        //println(count);
-      }
-    }
-
+    saveFirstFrame();
 
     loadPixels();
     video.loadPixels();
-
     ArrayList<Blob> currentBlobs = new ArrayList<Blob>();
+    checkPixels(currentBlobs);
+    updatePixels();
+    keepCurrentBlobsSmall(currentBlobs);
+    currentBlobsToPersons(currentBlobs);
 
+    for (Blob b : currentBlobs) {
+      b.show();
+    } 
+    for (Person p : persons) {
+      p.show();
+    }
+
+    textAlign(RIGHT);
+    fill(0);
+    //text(currentBlobs.size(), width-10, 40);
+    //text(blobs.size(), width-10, 80);
+    textSize(24);
+    text("color threshold: " + threshold, width-10, 50);  
+
+
+
+    delay(50);
+    fill(255, 0, 0);
+    //storeInPerson();
+  }
+
+  void saveFirstFrame() { //saves the 10th frame after start in prevFrame
+    if (video.available() == true) {
+      video.read();
+      if (count < 10) {
+        prevFrame.copy(video, 0, 0, video.width, video.height, 0, 0, video.width, video.height);   //Screesnhot van video input
+        prevFrame.updatePixels();  //put screenshot in PrevFrame
+        count++;
+      }
+    }
+  }
+
+  void checkPixels(ArrayList<Blob> currentBlobs) {
     for (int x = 0; x < video.width; x = x+20 ) {
       for (int y = 0; y < video.height; y = y+20 ) {
         if (x > width/2 - centerSize/2 & x < width/2 + centerSize/2 && y > height/2 - centerSize/2 && y < height/2 + centerSize/2) {
@@ -56,20 +80,20 @@ class VideoAnalysis {
           r2 = 0;
           g2 = 0;
           b2 = 0;
-          for (int i = 0; i < 20; i++) {
+          for (int i = 0; i < 20; i++) { // add rgb value of each pixel in 20 x 20 block to r1, g1, b1 and compares it to baseline
             for (int s = 0; s < 20; s++) {
               int loc = x+i + (y+s)*video.width;            
               color current = video.pixels[loc];      
-              color previous = prevFrame.pixels[loc]; 
+              color baseline = prevFrame.pixels[loc]; 
               pixels[loc] = video.pixels[loc];
 
               r1 = r1 + red(current); 
               g1 = g1 + green(current); 
               b1 = b1 + blue(current);
-              r2 = r2 + red(previous); 
-              g2 = g2 + green(previous); 
-              b2 = b2 + blue(previous);
-              if (s == 19 && i == 19) 
+              r2 = r2 + red(baseline); 
+              g2 = g2 + green(baseline); 
+              b2 = b2 + blue(baseline);
+              if (s == 19 && i == 19) // find mean value of 20 x 20 block
               {
                 r1 = r1/400;
                 g1 = g1/400;
@@ -80,19 +104,19 @@ class VideoAnalysis {
               }
             }
           }
-          float diff = dist(r1, g1, b1, r2, g2, b2); //calculate distance difference of 2 images
+          float diff = dist(r1, g1, b1, r2, g2, b2); //calculate difference of 2 images by finding distance between point in 3-dimensional rgb space  
 
-          if (diff > threshold) {           
+          if (diff > threshold) { //check difference over treshold          
             boolean found = false;
             for (Blob b : currentBlobs) {
-              if (b.isNear(x, y)) {
-                b.setPos(x, y);
+              if (b.isNear(x, y)) { //checks for overlap with existing blob
+                b.setPos(x, y);     //changes position of/add to existing blob
                 found = true;
                 break;
               }
             }
 
-            if (!found) {
+            if (!found) {     // create new blob if there are no overlapping blobs
               Blob b = new Blob(x, y);
               currentBlobs.add(b);
             }
@@ -100,31 +124,29 @@ class VideoAnalysis {
         }
       }
     }
-
-    updatePixels();
-
-    //Array niet te groot
+  }
+  void keepCurrentBlobsSmall(ArrayList<Blob> currentBlobs) {
     for (int i = currentBlobs.size()-1; i >= 0; i--) {
       if (currentBlobs.get(i).size() < 500) {
         currentBlobs.remove(i);
       }
     }
+  }
 
-    // There are no blobs!
+  void currentBlobsToPersons(ArrayList<Blob> currentBlobs) {
+
+    //If there are no persons detected earlier
     if (persons.isEmpty() && currentBlobs.size() > 0) {
-      //println("Adding blobs!");
       for (Blob b : currentBlobs) {
         b.setId(blobCounter);
-        //blobs.add(b);
-        //perons.add(new Person(blobCounter, 
         persons.add(new Person(blobCounter, b.getCenter()));
-
         blobCounter++;
       }
+    //If there are more blobs than person we iterate over to the persons arraylist
     } else if (persons.size() <= currentBlobs.size()) {
       // Match whatever blobs you can match
       for (Person p : persons) {
-        float recordD = 500;
+        float recordD = 200; 
         Blob matched = null;
         for (Blob cb : currentBlobs) {
 
@@ -136,29 +158,27 @@ class VideoAnalysis {
             matched = cb;
           }
         }
-        matched.taken = true;
-        p.addPosition(matched.getCenter());
+        if (matched != null) {
+          matched.taken = true;
+          p.addPosition(matched.getCenter());
+        }
       }
 
-      // Whatever is leftover make new blobs
+      // Whatever is leftover make new persons
       for (Blob b : currentBlobs) {
         if (!b.taken) {
-          //b.id = blobCounter;
-          b.id = blobCounter;
-
-          //blobs.add(b);
+          b.setId(blobCounter);
           persons.add(new Person(blobCounter, b.getCenter()));
-
           blobCounter++;
         }
       }
+      
+    // If there are more persons than blobs
     } else if (persons.size() > currentBlobs.size()) {
       for (Person p : persons) {
         p.taken = false;
       }
-
-
-      // Match whatever blobs you can match
+      // Match whatever blobs and persons you can match
       for (Blob cb : currentBlobs) {
         float recordD = 500;
         Person matched = null;
@@ -176,36 +196,14 @@ class VideoAnalysis {
           matched.become(cb);
         }
       }
-
+      // Remove the remaining persons
       for (int i = persons.size() - 1; i >= 0; i--) {
         Person p = persons.get(i);
         if (!p.taken) {
-          //blobs.remove(i);
           println("Removing person");
           persons.remove(i);
         }
       }
     }
-
-    for (Blob b : currentBlobs) {
-      b.show();
-    } 
-    for (Person p : persons) {
-      p.show();
-    }
-
-    textAlign(RIGHT);
-    fill(0);
-    //text(currentBlobs.size(), width-10, 40);
-    //text(blobs.size(), width-10, 80);
-    textSize(24);
-    text("color threshold: " + threshold, width-10, 50);  
-    text("distance threshold: " + distThreshold, width-10, 25);
-
-
-    delay(50);
-    fill(255, 0, 0);
-    //storeInPerson();
-
   }
 }

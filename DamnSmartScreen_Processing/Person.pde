@@ -5,7 +5,7 @@ class Person {
   boolean isAttentive = true;
   ArrayList<PVector> lastPositions = new ArrayList<PVector>();
   boolean taken = false;
-  int averageOver = 10;
+  int averageOver = 30;
 
   Person(int i, PVector p) {
     id = i;
@@ -27,11 +27,10 @@ class Person {
       PVector pos = lastPositions.get(i);
       x += pos.x;
       y += pos.y;
-
-      x /= lastPositions.size();
-      y /= lastPositions.size();
-      avPosition = new PVector(x, y);
     }
+    x /= avListSize;
+    y /= avListSize;
+    avPosition = new PVector(x, y);
   }
 
   // adds new position to lastPositions array
