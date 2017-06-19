@@ -5,13 +5,13 @@ VideoAnalysis va;
 Classifier c;
 QLearning ql;
 Capture video;
-Fakeduino f; 
+//Fakeduino f; 
 ArduinoInterface ai;
 
 Serial port;
 
 ArrayList<Person> persons = new ArrayList<Person>();
-int motorsteps = 200;
+int motorsteps = 10;
 
 void setup() {
 
@@ -30,47 +30,54 @@ void setup() {
       print(i);
       println(cameras[i]);
     }
-    video = new Capture(this, cameras[6]); //38 for external webcam
+    video = new Capture(this, cameras[38]); //38 for external webcam
   }
-  
+
   //Initializing objects
   va = new VideoAnalysis(video);
   ql = new QLearning(motorsteps, true, true);
   c = new Classifier(new PVector(width/2, height/2), ql);
   //f = new Fakeduino(ql); 
-    
+
   String p = Serial.list()[0];
   port = new Serial(this, p, 9600);
   ai = new ArduinoInterface(ql);
-
 }
 
 void draw() {
   //VideoAnalysis, Classification and Fakeduino is run on every frame. 
-  va.update();
-  c.selectPersonOfInterest();
-  //f.update();
+  if (video.available()) {
+    va.update();
+    //c.selectPersonOfInterest();
+    c.update();
+    //f.update();
+  }
 }
 
-void keyReleased(){
-  if (key == 'r'){
+void keyReleased() {
+  if (key == 'r') {
     ql.printR(ql.R);
-  } else if (key == 'q'){
+  } else if (key == 'q') {
     ql.printQ();
-  } else if (key == 'p'){
+  } else if (key == 'p') {
     c.printPOI();
-  } else if (key == 'l'){
+  } else if (key == 'l') {
     //Print all persons
     println("All persons:");
     for (Person p : persons) {
       int id = p.getId();
       println("Id = "+ id);
     }
-  } else if (key == 's'){
+  } else if (key == 's') {
     ql.savePolicy();
+  } else if (key == CODED) {
+    if (keyCode == ENTER) {
+      ql.reinforce();
+    }
   }
 }
 
-void serialEvent(Serial event) {
-  ai.serialE(event);
-}
+
+  void serialEvent(Serial event) {
+    ai.serialE(event);
+  }

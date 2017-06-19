@@ -7,7 +7,7 @@ class Classifier {
   float speedMin = 5; // ten (arbitrary number) is related to the speed people are allowed to move backwards
   int speedMax = 100;
   QLearning ql; 
-  int borderX = 100;
+  int borderX = 50;
   int borderY = 50;
 
 
