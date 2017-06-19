@@ -16,7 +16,7 @@ class VideoAnalysis {
 
   //BLOB
   int blobCounter = 0;
-  float distThreshold = 180;
+  float distThreshold = 120;
   ArrayList<Blob> blobs = new ArrayList<Blob>();
   int blobLength;
 
@@ -124,7 +124,7 @@ class VideoAnalysis {
     } else if (persons.size() <= currentBlobs.size()) {
       // Match whatever blobs you can match
       for (Person p : persons) {
-        float recordD = 1000;
+        float recordD = 500;
         Blob matched = null;
         for (Blob cb : currentBlobs) {
 
@@ -160,7 +160,7 @@ class VideoAnalysis {
 
       // Match whatever blobs you can match
       for (Blob cb : currentBlobs) {
-        float recordD = 1000;
+        float recordD = 500;
         Person matched = null;
         for (Person p : persons) {
           PVector centerB = (PVector)p.getLastPositions().get(0);

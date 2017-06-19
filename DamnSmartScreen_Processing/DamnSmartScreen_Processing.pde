@@ -11,7 +11,7 @@ ArrayList<Person> persons = new ArrayList<Person>();
 int motorsteps = 200;
 
 void setup() {
-  size(640, 480); //Screen size should correspond to camera resolution
+  size(1280, 720); //Screen size should correspond to camera resolution
 
   //Initializing camera
   String[] cameras = Capture.list();
@@ -26,7 +26,7 @@ void setup() {
       print(i);
       println(cameras[i]);
     }
-    video = new Capture(this, cameras[13]); //38 for external webcam
+    video = new Capture(this, cameras[38]); //38 for external webcam
   }
   
   //Initializing objects
