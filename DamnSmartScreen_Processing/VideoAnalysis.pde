@@ -1,6 +1,6 @@
 class VideoAnalysis {
   PImage prevFrame;
-  int centerSize = 100;
+  int centerSize = 250;
 
   int threshold = 100;
   float r1;

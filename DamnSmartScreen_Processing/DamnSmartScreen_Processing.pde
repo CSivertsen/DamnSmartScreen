@@ -5,14 +5,20 @@ VideoAnalysis va;
 Classifier c;
 QLearning ql;
 Capture video;
-Fakeduino f; 
+
+//Fakeduino f; 
+ArduinoInterface ai;
+Serial port; 
 StateManager sm;
 
+
 ArrayList<Person> persons = new ArrayList<Person>();
-int motorsteps = 10;
+int motorsteps = 10; //200 should be devidable by motorsteps
 
 void setup() {
-  size(640, 480); //Screen size should correspond to camera resolution
+
+  size(1280, 720); //Screen size should correspond to camera resolution
+
   //Initializing camera
   String[] cameras = Capture.list();
   video = new Capture(this, width, height, 30); // Last parameter is framerate. Default is 30 
@@ -33,18 +39,21 @@ void setup() {
 
   va = new VideoAnalysis(video);
   ql = new QLearning(motorsteps, true, true);
-    sm = new StateManager(motorsteps, ql, f);
-  c = new Classifier(new PVector(width/2, height/2), ql, sm);
-  f = new Fakeduino(ql, sm);
 
+  String p = Serial.list()[0];
+  port = new Serial(this, p, 9600);
+  ai = new ArduinoInterface(ql);
+  sm = new StateManager(motorsteps, ql, f);
+  c = new Classifier(new PVector(width/2, height/2), ql, sm);
+  //f = new Fakeduino(ql, sm);
 }
 
 void draw() {
   //VideoAnalysis, Classification and Fakeduino is run on every frame. 
-  if (video.available()) { 
+  if (video.available()) {
     va.update();
-    c.update(); 
-    f.update();
+    c.update();
+    //f.update();
   }
 }
 
@@ -68,3 +77,8 @@ void keyReleased() {
       ql.reinforce();
   }
 }
+
+
+  void serialEvent(Serial event) {
+    ai.serialE(event);
+  }

@@ -11,6 +11,7 @@ int saveAngle = 0;
 void setup()  {
   Serial.begin(9600);
   pinMode(ledPin, 13);
+    establishContact();  // send a byte to establish contact until receiver responds 
 
   pinMode(stp, OUTPUT);
   pinMode(dir, OUTPUT);
@@ -54,8 +55,18 @@ void loop() {
         delay(1);
       }
       delay(10);
-   
+     saveAngle = angle;
+     
+//  Serial.print("A");
+  Serial.println(saveAngle);
+  delay(50);
   }
-  saveAngle = angle;
+
 }
 
+void establishContact() {
+  while (Serial.available() <= 0) {
+  Serial.println("A");   // send a capital A
+  delay(300);
+  }
+}

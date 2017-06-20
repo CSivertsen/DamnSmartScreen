@@ -6,11 +6,10 @@ class Classifier {
   float lastRelDistLength;
   float speedMin = 5; // ten (arbitrary number) is related to the speed people are allowed to move backwards
   int speedMax = 100;
-  QLearning ql;
+  QLearning ql; 
   StateManager sm;
-  int borderX = 100;
+  int borderX = 50;
   int borderY = 50;
-
 
   Classifier(PVector c, QLearning _ql, StateManager _sm) {
     ql  = _ql;
