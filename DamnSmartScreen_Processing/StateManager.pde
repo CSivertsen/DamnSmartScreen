@@ -42,7 +42,8 @@ class StateManager {
     Person poi = c.getPersonOfInterest();
     if(p.equals(poi)){
       Double d = new Double(motorSteps/(360 / deg));
-      poiState = d.intValue(); 
+      //poiState = d.intValue()-1;
+      poiState = (int) Math.round(d);
       sm.updateQState();
     }
   }
