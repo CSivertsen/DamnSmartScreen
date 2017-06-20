@@ -5,10 +5,12 @@ VideoAnalysis va;
 Classifier c;
 QLearning ql;
 Capture video;
+
 //Fakeduino f; 
 ArduinoInterface ai;
+Serial port; 
+StateManager sm;
 
-Serial port;
 
 ArrayList<Person> persons = new ArrayList<Person>();
 int motorsteps = 10; //200 should be devidable by motorsteps
@@ -30,25 +32,26 @@ void setup() {
       print(i);
       println(cameras[i]);
     }
-    video = new Capture(this, cameras[38]); //38 for external webcam
+    video = new Capture(this, cameras[13]); //38 for external webcam
   }
 
   //Initializing objects
+
   va = new VideoAnalysis(video);
   ql = new QLearning(motorsteps, true, true);
-  c = new Classifier(new PVector(width/2, height/2), ql);
-  //f = new Fakeduino(ql); 
 
   String p = Serial.list()[0];
   port = new Serial(this, p, 9600);
   ai = new ArduinoInterface(ql);
+  sm = new StateManager(motorsteps, ql, f);
+  c = new Classifier(new PVector(width/2, height/2), ql, sm);
+  //f = new Fakeduino(ql, sm);
 }
 
 void draw() {
   //VideoAnalysis, Classification and Fakeduino is run on every frame. 
   if (video.available()) {
     va.update();
-    //c.selectPersonOfInterest();
     c.update();
     //f.update();
   }
@@ -70,10 +73,8 @@ void keyReleased() {
     }
   } else if (key == 's') {
     ql.savePolicy();
-  } else if (key == CODED) {
-    if (keyCode == ENTER) {
+  } else if (key == ' '){
       ql.reinforce();
-    }
   }
 }
 

@@ -2,12 +2,15 @@ class Person {
   int id;
   int posListSize = 100; // amount of lastPositions that are being stored
   PVector avPosition;
+  int angle;
   boolean isAttentive = true;
   ArrayList<PVector> lastPositions = new ArrayList<PVector>();
   boolean taken = false;
   int averageOver = 30;
+  StateManager sm;
 
-  Person(int i, PVector p) {
+  Person(int i, PVector p, StateManager _sm) {
+    sm = _sm;
     id = i;
     addPosition(p);
     println("New person created");
@@ -45,6 +48,13 @@ class Person {
       lastPositions.add(0, p);
     }
     averagePosition(averageOver);
+    sm.setPoiAngle(getAngle(),this);
+  }
+  
+  double getAngle() {
+    PVector lastPos = (PVector) getLastPositions().get(0);
+    double deg = Math.atan2(lastPos.x, lastPos.y) * 180 / Math.PI;
+    return deg;
   }
 
   PVector getAveragePosition() {

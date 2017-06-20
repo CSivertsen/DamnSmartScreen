@@ -22,7 +22,7 @@ class VideoAnalysis {
   VideoAnalysis(Capture v) {
     video =  v;
     video.start();
-    prevFrame = createImage(1280, 720, RGB);
+    prevFrame = createImage(640, 480, RGB);
   }
 
   void update() {
@@ -139,7 +139,7 @@ class VideoAnalysis {
     if (persons.isEmpty() && currentBlobs.size() > 0) {
       for (Blob b : currentBlobs) {
         b.setId(blobCounter);
-        persons.add(new Person(blobCounter, b.getCenter()));
+        persons.add(new Person(blobCounter, b.getCenter(), sm));
         blobCounter++;
       }
     //If there are more blobs than person we iterate over to the persons arraylist
@@ -168,7 +168,7 @@ class VideoAnalysis {
       for (Blob b : currentBlobs) {
         if (!b.taken) {
           b.setId(blobCounter);
-          persons.add(new Person(blobCounter, b.getCenter()));
+          persons.add(new Person(blobCounter, b.getCenter(), sm));
           blobCounter++;
         }
       }
