@@ -14,6 +14,8 @@ class QLearning {
 
   boolean isLearning = true;
   boolean loadPolicy = true;
+  
+  int currentState; 
 
   QLearning(int size, boolean learning, boolean load) {
     statesCount = size;
@@ -33,10 +35,9 @@ class QLearning {
   }
 
   int getNextMove() {
-    int currentState = lastPositions.get(0);
     int nextState = getPolicyFromState(currentState);
     setLastPositions(nextState);
-
+    currentState = nextState;
     return nextState;
   }
 
@@ -107,6 +108,10 @@ class QLearning {
     policyGotoState = bestStates.get(round(random(bestStates.size()-1)));
 
     return policyGotoState;
+  }
+  
+  void setState(int state){
+    currentState = state;
   }
 
   // Used for debugging

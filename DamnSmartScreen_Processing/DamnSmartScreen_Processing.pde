@@ -6,6 +6,7 @@ Classifier c;
 QLearning ql;
 Capture video;
 Fakeduino f; 
+StateManager sm;
 
 ArrayList<Person> persons = new ArrayList<Person>();
 int motorsteps = 10;
@@ -29,10 +30,13 @@ void setup() {
   }
 
   //Initializing objects
+
   va = new VideoAnalysis(video);
   ql = new QLearning(motorsteps, true, true);
-  c = new Classifier(new PVector(width/2, height/2), ql);
-  f = new Fakeduino(ql);
+    sm = new StateManager(motorsteps, ql, f);
+  c = new Classifier(new PVector(width/2, height/2), ql, sm);
+  f = new Fakeduino(ql, sm);
+
 }
 
 void draw() {
@@ -60,9 +64,7 @@ void keyReleased() {
     }
   } else if (key == 's') {
     ql.savePolicy();
-  } else if (key == CODED){
-    if (keyCode == RETURN){
+  } else if (key == ' '){
       ql.reinforce();
-    }
   }
 }

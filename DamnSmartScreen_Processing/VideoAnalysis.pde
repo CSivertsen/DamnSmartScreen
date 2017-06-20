@@ -139,7 +139,7 @@ class VideoAnalysis {
     if (persons.isEmpty() && currentBlobs.size() > 0) {
       for (Blob b : currentBlobs) {
         b.setId(blobCounter);
-        persons.add(new Person(blobCounter, b.getCenter()));
+        persons.add(new Person(blobCounter, b.getCenter(), sm));
         blobCounter++;
       }
     //If there are more blobs than person we iterate over to the persons arraylist
@@ -168,7 +168,7 @@ class VideoAnalysis {
       for (Blob b : currentBlobs) {
         if (!b.taken) {
           b.setId(blobCounter);
-          persons.add(new Person(blobCounter, b.getCenter()));
+          persons.add(new Person(blobCounter, b.getCenter(), sm));
           blobCounter++;
         }
       }
