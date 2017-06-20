@@ -5,6 +5,7 @@ class ArduinoInterface {
   QLearning q;
   int arduinoState;
   int targetState;
+  int stepsPerState = 200/motorsteps;
   boolean started = false;
 
   ArduinoInterface(QLearning _q) {
@@ -17,7 +18,7 @@ class ArduinoInterface {
     //while(port.available() == 0){}
     println("state: "+state);
     targetState = state;
-    byte out = byte(state); //turns integer into byte
+    byte out = byte(state*stepsPerState); //turns integer into byte
     port.write(out);
     
   }
@@ -30,6 +31,7 @@ class ArduinoInterface {
     if (val != null) {
       val = trim(val);
       arduinoState = int(val);
+      arduinoState = arduinoState/stepsPerState;
       println(targetState);
       if (arduinoState == targetState||!started) {
         move(q.getNextMove());

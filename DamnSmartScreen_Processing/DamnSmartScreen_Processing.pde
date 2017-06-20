@@ -11,7 +11,7 @@ ArduinoInterface ai;
 Serial port;
 
 ArrayList<Person> persons = new ArrayList<Person>();
-int motorsteps = 10;
+int motorsteps = 10; //200 should be devidable by motorsteps
 
 void setup() {
 
