@@ -6,11 +6,12 @@ class StateManager {
   int screenState;
   QLearning ql;
   Fakeduino f;
+  ArduinoInterface ai;
     
-  StateManager(int steps, QLearning _ql, Fakeduino _f){
+  StateManager(int steps, QLearning _ql, ArduinoInterface _ai){
     motorSteps = steps;
     ql = _ql;
-    f = _f;
+    ai = _ai;
   }
   
   //Used to update QLearning to the correct state
@@ -27,7 +28,7 @@ class StateManager {
     
     int moveState = (motorSteps + (screenState - (currentState - nextState))) % motorSteps;  
     //ai.move(moveState);
-    f.move(moveState);
+    ai.move(moveState);
     
   }
   

@@ -37,6 +37,7 @@ class ArduinoInterface {
         move(q.getNextMove());
         if(!started){started = true;}
       }
+      sm.setScreenAngle(arduinoState);
       println("Arduino moved to: "+arduinoState);
     }
   }
