@@ -12,9 +12,13 @@ class Fakeduino {
   }
   
   void move(int state){
-   moveTime = random(500, 2000);
+   //moveTime = random(500, 2000);
+   moveTime = 1;
    println("I moved to position " + state);
    sm.setScreenAngle(state);
+   if (state > 2 || state > 7){
+     ql.reinforce();
+   }; 
    lastMove = millis();
   }
   

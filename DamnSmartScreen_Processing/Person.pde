@@ -51,10 +51,30 @@ class Person {
     sm.setPoiAngle(getAngle(),this);
   }
   
-  double getAngle() {
+  float getAngle() {
+    float degMapped;
+    
     PVector lastPos = (PVector) getLastPositions().get(0);
-    double deg = Math.atan2(lastPos.x, lastPos.y) * 180 / Math.PI;
-    return deg;
+    //float transX = lastPos.x + (width/2);
+    //float transY = lastPos.y + (height/2);
+    PVector topPoint = new PVector (width/2, 0);
+    PVector center = new PVector(width/2,height/2);
+    PVector axis = PVector.sub(center, topPoint);
+    PVector posFromCenter = PVector.sub(center, lastPos);
+    
+    //float rad = PVector.angleBetween(axis, posFromCenter);
+    float rad = posFromCenter.heading();
+    
+    float deg = degrees(rad);
+    
+    if(deg < 0) {
+      degMapped = map(deg, 0, -180, 359.999, 180.0001); 
+    } else {
+      degMapped = deg; 
+    }
+        
+    //double deg = Math.atan2(transX, transY) * 180 / Math.PI;
+    return degMapped;
   }
 
   PVector getAveragePosition() {

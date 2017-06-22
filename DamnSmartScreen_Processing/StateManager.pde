@@ -6,11 +6,13 @@ class StateManager {
   int screenState;
   QLearning ql;
   Fakeduino f;
+  ArduinoInterface ai;
     
-  StateManager(int steps, QLearning _ql, Fakeduino _f){
+  StateManager(int steps, QLearning _ql, ArduinoInterface _ai){
     motorSteps = steps;
     ql = _ql;
-    f = _f;
+    //f = _f;
+    ai = _ai;
   }
   
   //Used to update QLearning to the correct state
@@ -18,17 +20,18 @@ class StateManager {
     int currentState;
     
     currentState = ((poiState - screenState) + motorSteps) % motorSteps; 
-    
+    //println("QLearning state set to: \t" + currentState + "\t" + poiState + "\t" + screenState );
     ql.setState(currentState);
   }
   
   //Translates a state from QLearning to a position for the ArduinoInterface
-  void moveToState(int currentState, int nextState){
+  int moveToState(int currentState, int nextState){  
     
     int moveState = (motorSteps + (screenState - (currentState - nextState))) % motorSteps;  
     //ai.move(moveState);
-    f.move(moveState);
-    
+    //f.move(moveState);
+    println(currentState + "\t" + nextState + "\t" + moveState);
+    return moveState;
   }
   
   void setScreenAngle(int angle){
@@ -36,11 +39,12 @@ class StateManager {
     sm.updateQState();
   }
   
-  void setPoiAngle(double deg, Person p){
+  void setPoiAngle(float deg, Person p){
     //Convert angle to state
     Person poi = c.getPersonOfInterest();
     if(p.equals(poi)){
-      Double d = new Double(motorSteps/(360 / deg));
+      //println("Received angle: " + deg);
+      float d = new Float(motorSteps/(360 / deg));
       //poiState = d.intValue()-1;
       poiState = (int) Math.round(d);
       sm.updateQState();

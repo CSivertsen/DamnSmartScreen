@@ -1,7 +1,7 @@
 class QLearning {
 
-  double alpha = 0.1; // Learning rate
-  double gamma = 0.9; // Eagerness - 0 looks in the near future, 1 looks in the distant future
+  double alpha = 0.1; // Learning rate - default is 0.1
+  double gamma = 0.9; // Eagerness - 0 looks in the near future, 1 looks in the distant future - default is 0.9
 
   int penalty = -10;
 
@@ -36,23 +36,25 @@ class QLearning {
 
   int getNextMove() {
     int nextState = getPolicyFromState(currentState);
+    int translatedState = sm.moveToState(currentState, nextState);
     setLastPositions(nextState);
+    
     currentState = nextState;
-    return nextState;
+    return translatedState;
   }
 
   //
   void reinforce() {
     if (isLearning) {
       println("Reinforcing");
-      int backtrack = 3;
+      int backtrack = 1;
 
-      for (int i = 0; i < backtrack-1; i++) {
+      for (int i = 0; i < backtrack; i++) {
         double q = Q[lastPositions.get(i+1)][lastPositions.get(i)];
         double maxQ = maxQ(lastPositions.get(i));
         //int r = R[lastPositions.get(i+1)][lastPositions.get(1)];
         int r = penalty;
-        double value = q + alpha * (r + gamma * maxQ - q) * backtrack/(i+1); //Not a beautiful way of back-propagating, but I think it works for now.
+        double value = (backtrack/(i+1))/backtrack; //Not a beautiful way of back-propagating, but I think it works for now.
         Q[lastPositions.get(i+1)][lastPositions.get(i)] = value;
       }
     }

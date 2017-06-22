@@ -16,11 +16,11 @@ class ArduinoInterface {
 
   void move(int state) {
     //while(port.available() == 0){}
-    println("state: "+state);
+    //println("state: "+state);
     targetState = state;
     byte out = byte(state*stepsPerState); //turns integer into byte
     port.write(out);
-    
+    sm.setScreenAngle(targetState);
   }
 
   void serialE(Serial event) {
@@ -32,7 +32,7 @@ class ArduinoInterface {
       val = trim(val);
       arduinoState = int(val);
       arduinoState = arduinoState/stepsPerState;
-      println(targetState);
+      //println(targetState);
       if (arduinoState == targetState||!started) {
         move(q.getNextMove());
         if(!started){started = true;}

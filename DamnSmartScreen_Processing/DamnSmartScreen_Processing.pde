@@ -6,7 +6,7 @@ Classifier c;
 QLearning ql;
 Capture video;
 
-//Fakeduino f; 
+Fakeduino f; 
 ArduinoInterface ai;
 Serial port; 
 StateManager sm;
@@ -32,19 +32,20 @@ void setup() {
       print(i);
       println(cameras[i]);
     }
-    video = new Capture(this, cameras[13]); //38 for external webcam
+    video = new Capture(this, cameras[2]); //38 for external webcam //26
   }
 
   //Initializing objects
 
-  va = new VideoAnalysis(video);
-  ql = new QLearning(motorsteps, true, true);
 
+  va = new VideoAnalysis(video);
+  ql = new QLearning(motorsteps, false, true);
+  c = new Classifier(new PVector(width/2, height/2), ql, sm);
+  sm = new StateManager(motorsteps, ql, ai);
   String p = Serial.list()[0];
   port = new Serial(this, p, 9600);
   ai = new ArduinoInterface(ql);
-  sm = new StateManager(motorsteps, ql, f);
-  c = new Classifier(new PVector(width/2, height/2), ql, sm);
+  
   //f = new Fakeduino(ql, sm);
 }
 
