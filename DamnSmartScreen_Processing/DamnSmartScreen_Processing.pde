@@ -32,21 +32,20 @@ void setup() {
       print(i);
       println(cameras[i]);
     }
-    video = new Capture(this, cameras[2]); //38 for external webcam //26
+    video = new Capture(this, cameras[11]); //38 for external webcam //26
   }
 
   //Initializing objects
 
 
   va = new VideoAnalysis(video);
-  ql = new QLearning(motorsteps, false, true);
+  ql = new QLearning(motorsteps, true, false);
   c = new Classifier(new PVector(width/2, height/2), ql, sm);
-  sm = new StateManager(motorsteps, ql, ai);
-  String p = Serial.list()[0];
-  port = new Serial(this, p, 9600);
-  ai = new ArduinoInterface(ql);
-  
-  //f = new Fakeduino(ql, sm);
+  sm = new StateManager(motorsteps, ql, f);
+  //String p = Serial.list()[0];
+  //port = new Serial(this, p, 9600);
+  //ai = new ArduinoInterface(ql);
+  f = new Fakeduino(ql, sm);
 }
 
 void draw() {
@@ -54,7 +53,7 @@ void draw() {
   if (video.available()) {
     va.update();
     c.update();
-    //f.update();
+    f.update();
   }
 }
 
@@ -80,6 +79,6 @@ void keyReleased() {
 }
 
 
-  void serialEvent(Serial event) {
-    ai.serialE(event);
-  }
+  //void serialEvent(Serial event) {
+  //  ai.serialE(event);
+  //}

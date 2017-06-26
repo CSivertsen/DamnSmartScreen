@@ -8,11 +8,11 @@ class StateManager {
   Fakeduino f;
   ArduinoInterface ai;
     
-  StateManager(int steps, QLearning _ql, ArduinoInterface _ai){
+  StateManager(int steps, QLearning _ql, Fakeduino _f){
     motorSteps = steps;
     ql = _ql;
-    //f = _f;
-    ai = _ai;
+    f = _f;
+    //ai = _ai;
   }
   
   //Used to update QLearning to the correct state
