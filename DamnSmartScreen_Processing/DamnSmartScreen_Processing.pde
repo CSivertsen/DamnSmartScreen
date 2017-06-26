@@ -11,9 +11,8 @@ ArduinoInterface ai;
 Serial port; 
 StateManager sm;
 
-
-ArrayList<Person> persons = new ArrayList<Person>();
-int motorsteps = 10; //200 should be devidable by motorsteps
+ArrayList<Person> persons = new ArrayList<Person>(); //Used to keep track of persons in the frame
+int motorsteps = 10; //Motor accepts up to 200 steps. The value here should be 200 % x = 0
 
 void setup() {
 
@@ -32,12 +31,10 @@ void setup() {
       print(i);
       println(cameras[i]);
     }
-    video = new Capture(this, cameras[2]); //38 for external webcam //26
+    video = new Capture(this, cameras[2]); //38 for external webcam
   }
 
   //Initializing objects
-
-
   va = new VideoAnalysis(video);
   ql = new QLearning(motorsteps, false, true);
   c = new Classifier(new PVector(width/2, height/2), ql, sm);
@@ -58,6 +55,8 @@ void draw() {
   }
 }
 
+//Multiple key events can be used trigger different functions.
+//Used for debugging. 
 void keyReleased() {
   if (key == 'r') {
     ql.printR(ql.R);

@@ -1,6 +1,5 @@
-//This class is solely used testing purposes, to emulate the behavior of the Arduino.  
+//This class is used to handle Serial communication with the Arduino.
 class ArduinoInterface {
-
   
   QLearning q;
   int arduinoState;

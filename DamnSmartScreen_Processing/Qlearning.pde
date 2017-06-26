@@ -1,3 +1,6 @@
+//The QLearning class handles QLearning
+//The code is a heavily adapted version of an example by Leonard Giura
+//The original example is available here: http://technobium.com/reinforcement-learning-q-learning-java/
 class QLearning {
 
   double alpha = 0.1; // Learning rate - default is 0.1
@@ -16,7 +19,10 @@ class QLearning {
   boolean loadPolicy = true;
   
   int currentState; 
-
+  
+  //The constructor takes the amount of possible states as the first argument
+  //Through the the second argument learning can be toggled on and off 
+  //and through the last you can load an existing policy or generate a new.
   QLearning(int size, boolean learning, boolean load) {
     statesCount = size;
     R = new int[statesCount][statesCount];
@@ -33,7 +39,8 @@ class QLearning {
   void showPolicy() {
     println("Policy:");
   }
-
+  
+  //Used by other classes to get next move 
   int getNextMove() {
     int nextState = getPolicyFromState(currentState);
     int translatedState = sm.moveToState(currentState, nextState);
@@ -43,24 +50,28 @@ class QLearning {
     return translatedState;
   }
 
-  //
+  //Reinforce is called by Classifier when the conditions for negative reinforcement are met
   void reinforce() {
     if (isLearning) {
       println("Reinforcing");
       int backtrack = 1;
-
+      
+      //For exploration we included the ability to reinforce a sequence of states. 
+      //This was based on the assumption that the a person losing attention might be
+      //the consequence of a sequence of steps rather than just the last one.
+      //This was never confirmed, and was not used for the final demo. 
       for (int i = 0; i < backtrack; i++) {
         double q = Q[lastPositions.get(i+1)][lastPositions.get(i)];
         double maxQ = maxQ(lastPositions.get(i));
         //int r = R[lastPositions.get(i+1)][lastPositions.get(1)];
         int r = penalty;
-        double value = (backtrack/(i+1))/backtrack; //Not a beautiful way of back-propagating, but I think it works for now.
+        double value = (backtrack/(i+1))/backtrack; //Not a good way of backpropagating, but was not used anyway
         Q[lastPositions.get(i+1)][lastPositions.get(i)] = value;
       }
     }
   }
 
-  //Saves the last positions, so we can backpropagate the reinforcement
+  //Saves the last positions, so we can backpropagate 
   void setLastPositions(int p) {
     if (lastPositions.size() == 0) {
       lastPositions.add(p);
@@ -112,6 +123,7 @@ class QLearning {
     return policyGotoState;
   }
   
+  //Allows the Classifier to "reorient" the QLearning object as the Person Of Interest moves around.
   void setState(int state){
     currentState = state;
   }

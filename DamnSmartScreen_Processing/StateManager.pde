@@ -1,4 +1,4 @@
-//This class tranlates the relative position scheme to absolute positions and vice versa.
+//This class tranlates the relative position scheme used in QLearning to absolute positions used for the motor and camera and vice versa.
 class StateManager {
   
   int motorSteps;

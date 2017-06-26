@@ -1,3 +1,4 @@
+//This class is used to keep track of persons currently in the frame.
 class Person {
   int id;
   int posListSize = 100; // amount of lastPositions that are being stored

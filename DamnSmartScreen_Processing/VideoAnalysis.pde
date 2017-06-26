@@ -1,3 +1,4 @@
+//This class determines through difference in contrast the movement in the frame.
 class VideoAnalysis {
   PImage prevFrame;
   int centerSize = 250;
