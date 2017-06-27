@@ -1,7 +1,6 @@
-// Daniel Shiffman
-// http://codingtra.in
-// http://patreon.com/codingtrain
-// Code for: https://youtu.be/r0lvsMPGEoY
+// This class is used by the VideoAnalysis class to keep track of objects.
+// This class is a modified version of an example by Daniel Shiffman (http://codingtra.in)
+// Code for this example: https://youtu.be/r0lvsMPGEoY
 
 class Blob {
   float minx;
